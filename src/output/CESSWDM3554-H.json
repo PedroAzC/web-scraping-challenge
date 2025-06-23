@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM3554-H",
+    "description": "1.5HP, 1770RPM, 3PH, 60HZ, 56HC, 3526M, TEFC, F",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "1.5"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "1770"
+        },
+        {
+            "Frame": "56HC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3554"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM3554-H/CESSWDM3554-H_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM3554-H/CESSWDM3554-H_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

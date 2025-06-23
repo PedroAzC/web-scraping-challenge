@@ -1,0 +1,41 @@
+{
+    "product_id": "CEBM3615T",
+    "description": "5HP, 1750RPM, 3PH, 60HZ, 184TC, 3642M, TEFC, F1",
+    "name": "3-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "5"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "1750"
+        },
+        {
+            "Frame": "184TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3615"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEBM3615T/CEBM3615T_manual.pdf"
+        },
+        {
+            "cad": "assets/CEBM3615T/CEBM3615T_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

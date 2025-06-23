@@ -1,0 +1,41 @@
+{
+    "product_id": "CEBM3558T",
+    "description": "2HP, 1760RPM, 3PH, 60HZ, 145TC, 3528M, TEFC, F1",
+    "name": "3-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "2"
+        },
+        {
+            "voltage": "460/230"
+        },
+        {
+            "rpm": "1760"
+        },
+        {
+            "Frame": "145TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3558"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEBM3558T/CEBM3558T_manual.pdf"
+        },
+        {
+            "cad": "assets/CEBM3558T/CEBM3558T_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

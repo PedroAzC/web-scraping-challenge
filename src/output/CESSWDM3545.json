@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM3545",
+    "description": "1HP, 3450RPM, 3PH, 60HZ, 56C, 3520M, TENV, F1, N",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "1"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "3450"
+        },
+        {
+            "Frame": "56C"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3545"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM3545/CESSWDM3545_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM3545/CESSWDM3545_cad.dwg"
+        },
+        {
+            "image": "assets/CESSWDM3545/imagem_675.jpeg"
+        }
+    ]
+}

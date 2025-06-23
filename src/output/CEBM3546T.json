@@ -1,0 +1,41 @@
+{
+    "product_id": "CEBM3546T",
+    "description": "1HP, 1770RPM, 3PH, 60HZ, 143TC, 3522M, TEFC, F1",
+    "name": "3-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "1"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "1770"
+        },
+        {
+            "Frame": "143TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3546"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEBM3546T/CEBM3546T_manual.pdf"
+        },
+        {
+            "cad": "assets/CEBM3546T/CEBM3546T_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

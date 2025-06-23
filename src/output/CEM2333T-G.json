@@ -1,0 +1,41 @@
+{
+    "product_id": "CEM2333T-G",
+    "description": "15HP, 1765RPM, 3PH, 60HZ, 254TC, TEFC, F1",
+    "name": "3-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "15"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "1765"
+        },
+        {
+            "Frame": "254TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "2333"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEM2333T-G/CEM2333T-G_manual.pdf"
+        },
+        {
+            "cad": "assets/CEM2333T-G/CEM2333T-G_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

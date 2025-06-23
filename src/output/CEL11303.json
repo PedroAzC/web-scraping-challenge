@@ -1,0 +1,41 @@
+{
+    "product_id": "CEL11303",
+    "description": ".5HP, 3450RPM, 1PH, 60HZ, 56C, 3413LC, OPEN, F1",
+    "name": "1-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "0.5"
+        },
+        {
+            "voltage": "115/230"
+        },
+        {
+            "rpm": "3450"
+        },
+        {
+            "Frame": "56C"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "11303"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEL11303/CEL11303_manual.pdf"
+        },
+        {
+            "cad": "assets/CEL11303/CEL11303_cad.dwg"
+        },
+        {
+            "image": "assets/CEL11303/imagem_451.jpeg"
+        }
+    ]
+}

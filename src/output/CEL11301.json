@@ -1,0 +1,41 @@
+{
+    "product_id": "CEL11301",
+    "description": ".33HP, 1740RPM, 1PH, 60HZ, 56C, 3418LC, OPEN, F",
+    "name": "1-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "0.33"
+        },
+        {
+            "voltage": "115/230"
+        },
+        {
+            "rpm": "1740"
+        },
+        {
+            "Frame": "56C"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "11301"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEL11301/CEL11301_manual.pdf"
+        },
+        {
+            "cad": "assets/CEL11301/CEL11301_cad.dwg"
+        },
+        {
+            "image": "assets/CEL11301/imagem_451.jpeg"
+        }
+    ]
+}

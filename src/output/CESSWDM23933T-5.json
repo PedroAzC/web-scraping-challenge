@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM23933T-5",
+    "description": "15HP, 1765RPM, 3PH, 60HZ, 254TC, 3956M, TEFC, F",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "15"
+        },
+        {
+            "voltage": "575"
+        },
+        {
+            "rpm": "1765"
+        },
+        {
+            "Frame": "254TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "23933"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM23933T-5/CESSWDM23933T-5_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM23933T-5/CESSWDM23933T-5_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

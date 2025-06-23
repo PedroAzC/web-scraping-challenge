@@ -316,7 +316,6 @@ def format_data(product_type, product_data):
         if hp.startswith('.'):
             hp = '0' + hp
         hp = re.sub(r'(\.\d*?)0+$', r'\1', hp).rstrip('.')  
-
         # knowing that this HP is at the especified hertz its a important data
         # but for following the json format as suggeted in the challenge, 
         # and to show how i handle these type of strings, i decided to follow the sugested format.

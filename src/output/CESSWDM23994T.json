@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM23994T",
+    "description": "15HP, 3520RPM, 3PH, 60HZ, 254TC, 3952M, TEFC, F",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "15"
+        },
+        {
+            "voltage": "460/230"
+        },
+        {
+            "rpm": "3520"
+        },
+        {
+            "Frame": "254TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "23994"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM23994T/CESSWDM23994T_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM23994T/CESSWDM23994T_cad.dwg"
+        },
+        {
+            "image": "assets/CESSWDM23994T/imagem_712.jpeg"
+        }
+    ]
+}

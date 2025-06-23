@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM23934T",
+    "description": "20HP, 1765RPM, 3PH, 60HZ, 256TC, 3960M, TEFC, F",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "20"
+        },
+        {
+            "voltage": "460/230"
+        },
+        {
+            "rpm": "1765"
+        },
+        {
+            "Frame": "256TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "23934"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM23934T/CESSWDM23934T_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM23934T/CESSWDM23934T_cad.dwg"
+        },
+        {
+            "image": "assets/CESSWDM23934T/imagem_712.jpeg"
+        }
+    ]
+}

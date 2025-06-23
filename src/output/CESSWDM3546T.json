@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM3546T",
+    "description": "1HP, 1770RPM, 3PH, 60HZ, 143TC, 3522M, TEFC, F1",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "1"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "1770"
+        },
+        {
+            "Frame": "143TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3546"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM3546T/CESSWDM3546T_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM3546T/CESSWDM3546T_cad.dwg"
+        },
+        {
+            "image": "assets/CESSWDM3546T/imagem_675.jpeg"
+        }
+    ]
+}

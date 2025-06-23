@@ -1,0 +1,41 @@
+{
+    "product_id": "CEM2332T-G",
+    "description": "10HP, 1180RPM, 3PH, 60HZ, 256TC, TEFC, F1",
+    "name": "3-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "10"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "1180"
+        },
+        {
+            "Frame": "256TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "2332"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEM2332T-G/CEM2332T-G_manual.pdf"
+        },
+        {
+            "cad": "assets/CEM2332T-G/CEM2332T-G_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

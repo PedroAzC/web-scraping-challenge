@@ -1,0 +1,41 @@
+{
+    "product_id": "CEBM3714T",
+    "description": "10HP, 1770RPM, 3PH, 60HZ, 215TC, 3752M, TEFC, F",
+    "name": "3-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "10"
+        },
+        {
+            "voltage": "460/230"
+        },
+        {
+            "rpm": "1770"
+        },
+        {
+            "Frame": "215TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3714"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEBM3714T/CEBM3714T_manual.pdf"
+        },
+        {
+            "cad": "assets/CEBM3714T/CEBM3714T_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "product_id": "CEL11304",
+    "description": ".5HP, 1725RPM, 1PH, 60HZ, 56C, 3424LC, OPEN, F1",
+    "name": "1-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "0.5"
+        },
+        {
+            "voltage": "115/230"
+        },
+        {
+            "rpm": "1725"
+        },
+        {
+            "Frame": "56C"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "11304"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEL11304/CEL11304_manual.pdf"
+        },
+        {
+            "cad": "assets/CEL11304/CEL11304_cad.dwg"
+        },
+        {
+            "image": "assets/CEL11304/imagem_451.jpeg"
+        }
+    ]
+}

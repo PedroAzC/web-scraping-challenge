@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM3550T",
+    "description": "1.5HP, 3500RPM, 3PH, 60HZ, 143TC, 3532M, TENV",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "1.5"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "3500"
+        },
+        {
+            "Frame": "143TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3550"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM3550T/CESSWDM3550T_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM3550T/CESSWDM3550T_cad.dwg"
+        },
+        {
+            "image": "assets/CESSWDM3550T/imagem_675.jpeg"
+        }
+    ]
+}

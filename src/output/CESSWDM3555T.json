@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM3555T",
+    "description": "2HP, 3450RPM, 3PH, 60HZ, 145TC, 3532M, TEFC, F1",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "2"
+        },
+        {
+            "voltage": "208/230/460"
+        },
+        {
+            "rpm": "3450"
+        },
+        {
+            "Frame": "145TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3555"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM3555T/CESSWDM3555T_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM3555T/CESSWDM3555T_cad.dwg"
+        },
+        {
+            "image": "assets/CESSWDM3555T/imagem_712.jpeg"
+        }
+    ]
+}

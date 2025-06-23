@@ -1,0 +1,41 @@
+{
+    "product_id": "CEBM3611T",
+    "description": "3HP, 1760RPM, 3PH, 60HZ, 182TC, 3632M, TEFC, F1",
+    "name": "3-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "3"
+        },
+        {
+            "voltage": "460/230"
+        },
+        {
+            "rpm": "1760"
+        },
+        {
+            "Frame": "182TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3611"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEBM3611T/CEBM3611T_manual.pdf"
+        },
+        {
+            "cad": "assets/CEBM3611T/CEBM3611T_cad.dwg"
+        },
+        {
+            "image": ""
+        }
+    ]
+}

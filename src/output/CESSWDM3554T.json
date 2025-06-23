@@ -1,0 +1,41 @@
+{
+    "product_id": "CESSWDM3554T",
+    "description": "1.5HP, 1770RPM, 3PH, 60HZ, 145TC, 3524M, TEFC",
+    "name": "3-Phase AC_MOTOR Wash Down All Stainless Steel",
+    "specs": [
+        {
+            "hp": "1.5"
+        },
+        {
+            "voltage": "230/460"
+        },
+        {
+            "rpm": "1770"
+        },
+        {
+            "Frame": "145TC"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "3554"
+        },
+        {
+            "description": "Wash Down All Stainless Steel"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CESSWDM3554T/CESSWDM3554T_manual.pdf"
+        },
+        {
+            "cad": "assets/CESSWDM3554T/CESSWDM3554T_cad.dwg"
+        },
+        {
+            "image": "assets/CESSWDM3554T/imagem_712.jpeg"
+        }
+    ]
+}

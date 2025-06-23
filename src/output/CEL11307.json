@@ -1,0 +1,41 @@
+{
+    "product_id": "CEL11307",
+    "description": ".75HP, 1755RPM, 1PH, 60HZ, 56C, 3522LC, OPEN, F",
+    "name": "1-Phase AC_MOTOR General Purpose",
+    "specs": [
+        {
+            "hp": "0.75"
+        },
+        {
+            "voltage": "115/230"
+        },
+        {
+            "rpm": "1755"
+        },
+        {
+            "Frame": "56C"
+        }
+    ],
+    "bom": [
+        {
+            "part_number": "11307"
+        },
+        {
+            "description": "General Purpose"
+        },
+        {
+            "quantity": "1"
+        }
+    ],
+    "assets": [
+        {
+            "manual": "assets/CEL11307/CEL11307_manual.pdf"
+        },
+        {
+            "cad": "assets/CEL11307/CEL11307_cad.dwg"
+        },
+        {
+            "image": "assets/CEL11307/imagem_451.jpeg"
+        }
+    ]
+}
