@@ -93,9 +93,9 @@ def get_manual(product_code,directory):
             print(f"File saved in: {output_path}")
         
     else:        
-        error_log_manual_download.append(product_code)
+        global_vars.error_log_manual_download.append(product_code)
     
-    print(error_log_manual_download)
+    print(global_vars.error_log_manual_download)
     
     return manual
 
@@ -157,19 +157,3 @@ def general_get_specs(product_code,product_specs):
     
     print(product_data)
     return product_data
-
-def get_manual(product_code,directory): 
-    try:
-        directory = os.path.join(os.getcwd(), "output")
-        directory = os.path.join(directory, "assets")
-        if product_name:
-            directory = os.path.join(directory, product_name)
-            os.makedirs(directory, exist_ok=True)
-        else:
-            directory = os.path.join(directory, 'product_name_not_found')
-            os.makedirs(directory, exist_ok=True)
-        return directory
-    
-    except OSError as e:
-        print(f"[ERRO] '{directory}': {e}")
-        return None

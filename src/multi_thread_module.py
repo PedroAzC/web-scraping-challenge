@@ -1,5 +1,7 @@
 from utility import create_product_directory
 from web_scraper import general_get_specs, get_manual
+# import global_vars
+
 
 def process_product(product_code, product_spec):
     product_data = general_get_specs(product_code, product_spec)
