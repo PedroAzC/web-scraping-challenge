@@ -1,3 +1,6 @@
+import os
+import global_vars
+
 def create_product_directory(product_name):
     try:
         directory = os.path.join(os.getcwd(), "output")

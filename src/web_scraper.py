@@ -1,3 +1,14 @@
+import requests
+import os
+from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+import global_vars
+
 def get_product_ids(product_web_page_code):
     
     list_product_codes = []  
@@ -61,6 +72,9 @@ def get_product_ids(product_web_page_code):
             break  
         
     return list_product_codes, list_image_id
+
+def get_manual(product_code,directory):
+    
     manual = ''   
     url = 'https://www.baldor.com/api/products/'+ product_code +'/infopacket' 
     output_path = os.path.join(directory, f"{product_code}_manual.pdf")
@@ -86,7 +100,6 @@ def get_product_ids(product_web_page_code):
     return manual
 
 def general_get_specs(product_code,product_specs):
-
 
     product_data = {}
     product_data['name'] = ''
