@@ -1,487 +1,307 @@
-
-# In the catalog pages, I can retrieve a lot of product specs as JSON via the API, but not all of them.
-# Because of this limitation, I decided to make a scraper that works on the product pages, where there is a lot more technical information.
-# I chose to use BeautifulSoup and Selenium for most of my code, as there i coudnt use any API on the product pages that provides data in JSON format,
-# besides downloading the images and manuals.
-
-import requests
-import re
-import time
-import json
-import os
-from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.edge.options import Options
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import time
-
-
-list_cad_download_error =[]
-list_manual_download_error =[]
-
-# I've focused on 2 products because the data gathering method is the same for different types of products.
-# So it's practically the same, except for the download CAD function, which needs an extra method to deal with some products.
-# I chose to use my time on making upgrades to the existing modules, so they can be more robust.
-# The get_data method is the same for all the products; it just needs to include the labels in this dictionary and in the format data.
-
-
-# here i can add any product spec i can gather in the product page. 
-products_labels = {
-    "AC_MOTORS":{
-    "general_purpose": {
-        "labels": ["Output @ Frequency", "Catalog Number", "Frame",
-                   "Voltage @ Frequency", "Speed", "Product Family", "Phase", "Quantity"]
-    },  
-    "washdown_duty": {
-        "labels": ["Output @ Frequency", "Catalog Number", "Frame",
-                   "Voltage @ Frequency", "Speed", "Product Family", "Phase", "Quantity"]
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "843e8c51",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from concurrent.futures import ThreadPoolExecutor, as_completed\n",
+    "\n",
+    "# created libraries for the project\n",
+    "from web_scraper import get_product_ids\n",
+    "# from utility import create_product_directory\n",
+    "from multi_thread_module import process_product\n",
+    "import global_vars\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "id": "ee930f91",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "class AC_motor:\n",
+    "\n",
+    "    def __init__(self,type, sub_type, sub_sub_type):\n",
+    "        self.type = type\n",
+    "        self.sub_type = sub_type\n",
+    "        self.sub_sub_type = sub_sub_type\n",
+    "        self.product_web_page_code = list(global_vars.dict_ac_motors_general_purpose[self.sub_sub_type].keys())[0]\n",
+    "        self.product_specs = list(global_vars.dict_ac_motors_general_purpose[self.sub_sub_type][self.product_web_page_code])\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "id": "15a0ecbe",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "110\n",
+      "['Catalog Number', 'Enclosure', 'Frame', 'Frame Material', 'Frequency', 'Motor Letter Type', 'Output @ Frequency', 'Phase', 'Synchronous Speed @ Frequency', 'Voltage @ Frequency', 'Haz Area Class and Group', 'Haz Area Division', 'Agency Approvals', 'Ambient Temperature', 'Auxillary Box', 'Auxillary Box Lead Termination', 'Base Indicator', 'Bearing Grease Type', 'Blower', 'Current @ Voltage', 'Design Code', 'Drip Cover', 'Duty Rating']\n",
+      "https://www.baldor.com/api/products?include=results&language=en-US&include=filters&include=category&pageSize=10&category=110\n",
+      "erro pegar img id\n",
+      "erro pegar img id\n",
+      "erro pegar img id\n",
+      "erro pegar img id\n",
+      "erro pegar img id\n",
+      "erro pegar img id\n",
+      "erro pegar img id\n",
+      "erro pegar img id\n",
+      "Page 0 loaded successfully.\n",
+      "{'name': '3-Phase CEBM3546T ', 'Quantity': '1', 'product_name': 'CEBM3546T', 'description': '1HP, 1770RPM, 3PH, 60HZ, 143TC, 3522M, TEFC, F1', 'Catalog Number': 'CEBM3546T', 'Enclosure': 'TEFC', 'Frame': '143TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '1.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ                        460.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '1.700 A @ 460.0 V                        3.400 A @ 230.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEBM3611T ', 'Quantity': '1', 'product_name': 'CEBM3611T', 'description': '3HP, 1760RPM, 3PH, 60HZ, 182TC, 3632M, TEFC, F1', 'Catalog Number': 'CEBM3611T', 'Enclosure': 'TEFC', 'Frame': '182TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '3.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '8.400 A @ 230.0 V9.000 A @ 208.0 V                        4.200 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEBM3558T ', 'Quantity': '1', 'product_name': 'CEBM3558T', 'description': '2HP, 1760RPM, 3PH, 60HZ, 145TC, 3528M, TEFC, F1', 'Catalog Number': 'CEBM3558T', 'Enclosure': 'TEFC', 'Frame': '145TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '2.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '5.600 A @ 230.0 V5.800 A @ 208.0 V                        2.800 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEM2333T ', 'Quantity': '1', 'product_name': 'CEM2333T', 'description': '15HP, 1765RPM, 3PH, 60HZ, 254TC, 0944M, TEFC, F', 'Catalog Number': 'CEM2333T', 'Enclosure': 'TEFC', 'Frame': '254TC', 'Frame Material': 'Cast Iron', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '15.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '36.200 A @ 230.0 V38.000 A @ 208.0 V                        18.100 A @ 460.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEBM3714T ', 'Quantity': '1', 'product_name': 'CEBM3714T', 'description': '10HP, 1770RPM, 3PH, 60HZ, 215TC, 3752M, TEFC, F', 'Catalog Number': 'CEBM3714T', 'Enclosure': 'TEFC', 'Frame': '215TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '10.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '25.000 A @ 230.0 V27.000 A @ 208.0 V                        12.500 A @ 460.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEM2333T-5 ', 'Quantity': '1', 'product_name': 'CEM2333T-5', 'description': '15HP, 1765RPM, 3PH, 60HZ, 254TC, 0944M, TEFC, F', 'Catalog Number': 'CEM2333T-5', 'Enclosure': 'TEFC', 'Frame': '254TC', 'Frame Material': 'Cast Iron', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '15.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '575.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA_PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '14.600 A @ 575.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CECP4402T-4 ', 'Quantity': '1', 'product_name': 'CECP4402T-4', 'description': '100HP, 3565RPM, 3PH, 60HZ, 405TSC, A40060M, TE', 'Catalog Number': 'CECP4402T-4', 'Enclosure': 'TEFC', 'Frame': '405TSC', 'Frame Material': 'Cast Iron', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '100.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ', 'Haz Area Class and Group': 'CLI GP A,B,C,D', 'Haz Area Division': 'Division II', 'Agency Approvals': 'CURUSEEV                        CCSAUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Current @ Voltage': '110.000 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEBM3615T ', 'Quantity': '1', 'product_name': 'CEBM3615T', 'description': '5HP, 1750RPM, 3PH, 60HZ, 184TC, 3642M, TEFC, F1', 'Catalog Number': 'CEBM3615T', 'Enclosure': 'TEFC', 'Frame': '184TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '5.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ                        460.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA_PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '13.400 A @ 230.0 V13.900 A @ 208.0 V                        6.700 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEBM3554T ', 'Quantity': '1', 'product_name': 'CEBM3554T', 'description': '1.5HP, 1770RPM, 3PH, 60HZ, 145TC, 3524M, TEFC', 'Catalog Number': 'CEBM3554T', 'Enclosure': 'TEFC', 'Frame': '145TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '1.500 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '4.600 A @ 230.0 V4.640 A @ 208.0 V                        2.300 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '3-Phase CEBM3710T ', 'Quantity': '1', 'product_name': 'CEBM3710T', 'description': '7.5HP, 1770RPM, 3PH, 60HZ, 213TC, 3738M, TEFC', 'Catalog Number': 'CEBM3710T', 'Enclosure': 'TEFC', 'Frame': '213TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '7.500 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ                        460.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA_PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '19.000 A @ 230.0 V20.000 A @ 208.0 V                        9.500 A @ 460.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEBM3546T\\CEBM3546T_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "Error downloading image. Status code: 404\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CECP4402T-4\\CECP4402T-4_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEM2333T\\CEM2333T_manual.pdf\n",
+      "[]\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEBM3558T\\CEBM3558T_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "Error downloading image. Status code: 404\n",
+      "Error downloading image. Status code: 404\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEBM3615T\\CEBM3615T_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "Imaged sucessfully downloaded\n",
+      "Error downloading image. Status code: 404\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEM2333T-5\\CEM2333T-5_manual.pdf\n",
+      "[]\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEBM3611T\\CEBM3611T_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEBM3710T\\CEBM3710T_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "Error downloading image. Status code: 404\n",
+      "Error downloading image. Status code: 404\n",
+      "Imaged sucessfully downloaded\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEBM3714T\\CEBM3714T_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "Error downloading image. Status code: 404\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CEBM3554T\\CEBM3554T_manual.pdf\n",
+      "[]\n",
+      "image not available\n",
+      "Error downloading image. Status code: 404\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "{'name': '3-Phase CEBM3546T ', 'Quantity': '1', 'product_name': 'CEBM3546T', 'description': '1HP, 1770RPM, 3PH, 60HZ, 143TC, 3522M, TEFC, F1', 'Catalog Number': 'CEBM3546T', 'Enclosure': 'TEFC', 'Frame': '143TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '1.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ                        460.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '1.700 A @ 460.0 V                        3.400 A @ 230.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}{'name': '3-Phase CEM2333T ', 'Quantity': '1', 'product_name': 'CEM2333T', 'description': '15HP, 1765RPM, 3PH, 60HZ, 254TC, 0944M, TEFC, F', 'Catalog Number': 'CEM2333T', 'Enclosure': 'TEFC', 'Frame': '254TC', 'Frame Material': 'Cast Iron', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '15.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '36.200 A @ 230.0 V38.000 A @ 208.0 V                        18.100 A @ 460.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "233\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "\n",
+      "{'name': '3-Phase CECP4402T-4 ', 'Quantity': '1', 'product_name': 'CECP4402T-4', 'description': '100HP, 3565RPM, 3PH, 60HZ, 405TSC, A40060M, TE', 'Catalog Number': 'CECP4402T-4', 'Enclosure': 'TEFC', 'Frame': '405TSC', 'Frame Material': 'Cast Iron', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '100.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ', 'Haz Area Class and Group': 'CLI GP A,B,C,D', 'Haz Area Division': 'Division II', 'Agency Approvals': 'CURUSEEV                        CCSAUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Current @ Voltage': '110.000 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "\n",
+      "\n",
+      "{'name': '3-Phase CEBM3615T ', 'Quantity': '1', 'product_name': 'CEBM3615T', 'description': '5HP, 1750RPM, 3PH, 60HZ, 184TC, 3642M, TEFC, F1', 'Catalog Number': 'CEBM3615T', 'Enclosure': 'TEFC', 'Frame': '184TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '5.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ                        460.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA_PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '13.400 A @ 230.0 V13.900 A @ 208.0 V                        6.700 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "\n",
+      "\n",
+      "{'name': '3-Phase CEBM3710T ', 'Quantity': '1', 'product_name': 'CEBM3710T', 'description': '7.5HP, 1770RPM, 3PH, 60HZ, 213TC, 3738M, TEFC', 'Catalog Number': 'CEBM3710T', 'Enclosure': 'TEFC', 'Frame': '213TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '7.500 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ                        460.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA_PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '19.000 A @ 230.0 V20.000 A @ 208.0 V                        9.500 A @ 460.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "\n",
+      "\n",
+      "{'name': '3-Phase CEBM3611T ', 'Quantity': '1', 'product_name': 'CEBM3611T', 'description': '3HP, 1760RPM, 3PH, 60HZ, 182TC, 3632M, TEFC, F1', 'Catalog Number': 'CEBM3611T', 'Enclosure': 'TEFC', 'Frame': '182TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '3.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '8.400 A @ 230.0 V9.000 A @ 208.0 V                        4.200 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "\n",
+      "\n",
+      "{'name': '3-Phase CEBM3714T ', 'Quantity': '1', 'product_name': 'CEBM3714T', 'description': '10HP, 1770RPM, 3PH, 60HZ, 215TC, 3752M, TEFC, F', 'Catalog Number': 'CEBM3714T', 'Enclosure': 'TEFC', 'Frame': '215TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '10.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '25.000 A @ 230.0 V27.000 A @ 208.0 V                        12.500 A @ 460.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "\n",
+      "\n",
+      "{'name': '3-Phase CEBM3558T ', 'Quantity': '1', 'product_name': 'CEBM3558T', 'description': '2HP, 1760RPM, 3PH, 60HZ, 145TC, 3528M, TEFC, F1', 'Catalog Number': 'CEBM3558T', 'Enclosure': 'TEFC', 'Frame': '145TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '2.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '5.600 A @ 230.0 V5.800 A @ 208.0 V                        2.800 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "\n",
+      "\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "{'name': '3-Phase CEM2333T-5 ', 'Quantity': '1', 'product_name': 'CEM2333T-5', 'description': '15HP, 1765RPM, 3PH, 60HZ, 254TC, 0944M, TEFC, F', 'Catalog Number': 'CEM2333T-5', 'Enclosure': 'TEFC', 'Frame': '254TC', 'Frame Material': 'Cast Iron', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '15.000 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '575.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'NEMA_PREMIUM                        CURUSEEV', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '14.600 A @ 575.0 V', 'Design Code': 'A', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "233\n",
+      "\n",
+      "{'name': '3-Phase CEBM3554T ', 'Quantity': '1', 'product_name': 'CEBM3554T', 'description': '1.5HP, 1770RPM, 3PH, 60HZ, 145TC, 3524M, TEFC', 'Catalog Number': 'CEBM3554T', 'Enclosure': 'TEFC', 'Frame': '145TC', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Three Phase', 'Output @ Frequency': '1.500 HP @ 60 HZ', 'Phase': '3', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '460.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUSEEV                        NEMA_PREMIUM', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '4.600 A @ 230.0 V4.640 A @ 208.0 V                        2.300 A @ 460.0 V', 'Design Code': 'B', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "\n",
+      "\n",
+      "312\n",
+      "['Catalog Number', 'Enclosure', 'Frame', 'Frame Material', 'Frequency', 'Motor Letter Type', 'Output @ Frequency', 'Phase', 'Synchronous Speed @ Frequency', 'Voltage @ Frequency', 'Haz Area Class and Group', 'Haz Area Division', 'Agency Approvals', 'Ambient Temperature', 'Auxillary Box', 'Auxillary Box Lead Termination', 'Base Indicator', 'Bearing Grease Type', 'Blower', 'Current @ Voltage', 'Design Code', 'Drip Cover', 'Duty Rating']\n",
+      "https://www.baldor.com/api/products?include=results&language=en-US&include=filters&include=category&pageSize=10&category=312\n",
+      "Page 0 loaded successfully.\n",
+      "{'name': '1-Phase CL3501 ', 'Quantity': '1', 'product_name': 'CL3501', 'description': '.33HP, 1725RPM, 1PH, 60HZ, 56C, 3414L, TEFC, F1', 'Catalog Number': 'CL3501', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.330 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '3.000 A @ 230.0 V3.200 A @ 208.0 V                        6.000 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3403 ', 'Quantity': '1', 'product_name': 'CL3403', 'description': '11L 4P TEFC HOR 56C', 'Catalog Number': 'CL3403', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.250 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '2.500 A @ 230.0 V2.600 A @ 208.0 V                        5.000 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3507 ', 'Quantity': '1', 'product_name': 'CL3507', 'description': '.75HP, 1725RPM, 1PH, 60HZ, 56C, 3428LC, TEFC, F', 'Catalog Number': 'CL3507', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Cap Run', 'Output @ Frequency': '.750 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '4.200 A @ 230.0 V5.400 A @ 208.0 V                        8.400 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3405 ', 'Quantity': '1', 'product_name': 'CL3405', 'description': '.33HP, 3450RPM, 1PH, 60HZ, 56C, 3413L, TEFC, F1', 'Catalog Number': 'CL3405', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.330 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ208.0 V @ 60 HZ                        115.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '6.000 A @ 115.0 V3.700 A @ 208.0 V3.200 A @ 208.0 V                        3.000 A @ 230.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3509 ', 'Quantity': '1', 'product_name': 'CL3509', 'description': '1HP, 3450RPM, 1PH, 60HZ, 56C, 3520L, TEFC, F1', 'Catalog Number': 'CL3509', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '1.000 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '11.800 A @ 115.0 V5.900 A @ 230.0 V                        6.100 A @ 208.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3504 ', 'Quantity': '1', 'product_name': 'CL3504', 'description': '.5HP, 1725RPM, 1PH, 60HZ, 56C, 3421L, TEFC, F1', 'Catalog Number': 'CL3504', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.500 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '3.700 A @ 230.0 V3.900 A @ 208.0 V                        7.400 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3513 ', 'Quantity': '1', 'product_name': 'CL3513', 'description': '1.5HP, 3450RPM, 1PH, 60HZ, 56C, 3528L, TEFC, F1', 'Catalog Number': 'CL3513', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '1.500 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '15.000 A @ 115.0 V7.500 A @ 230.0 V                        7.900 A @ 208.0 V', 'Design Code': 'L', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3510 ', 'Quantity': '1', 'product_name': 'CL3510', 'description': '1HP, 1725RPM, 1PH, 60HZ, 56C, 3524L, TEFC, F1, N', 'Catalog Number': 'CL3510', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '1.000 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '12.500 A @ 115.0 V                        6.300 A @ 230.0 V', 'Design Code': 'L', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "{'name': '1-Phase CL3506 ', 'Quantity': '1', 'product_name': 'CL3506', 'description': '.75HP, 3450RPM, 1PH, 60HZ, 56C, 3424L, TEFC, F1', 'Catalog Number': 'CL3506', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.750 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '4.800 A @ 230.0 V5.000 A @ 208.0 V                        9.600 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3403\\CL3403_manual.pdf\n",
+      "[]\n",
+      "Imaged sucessfully downloaded\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3501\\CL3501_manual.pdf\n",
+      "[]\n",
+      "Imaged sucessfully downloaded\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3504\\CL3504_manual.pdf\n",
+      "[]\n",
+      "Imaged sucessfully downloaded\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3507\\CL3507_manual.pdf\n",
+      "[]\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3506\\CL3506_manual.pdf\n",
+      "[]\n",
+      "Imaged sucessfully downloaded\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "Imaged sucessfully downloaded\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3405\\CL3405_manual.pdf\n",
+      "[]\n",
+      "Imaged sucessfully downloaded\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "{'name': '1-Phase CL3403 ', 'Quantity': '1', 'product_name': 'CL3403', 'description': '11L 4P TEFC HOR 56C', 'Catalog Number': 'CL3403', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.250 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '2.500 A @ 230.0 V2.600 A @ 208.0 V                        5.000 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3513\\CL3513_manual.pdf\n",
+      "[]\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3509\\CL3509_manual.pdf\n",
+      "[]\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3510\\CL3510_manual.pdf\n",
+      "[]\n",
+      "{'name': '1-Phase CL3501 ', 'Quantity': '1', 'product_name': 'CL3501', 'description': '.33HP, 1725RPM, 1PH, 60HZ, 56C, 3414L, TEFC, F1', 'Catalog Number': 'CL3501', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.330 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '3.000 A @ 230.0 V3.200 A @ 208.0 V                        6.000 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "Imaged sucessfully downloaded\n",
+      "Imaged sucessfully downloaded\n",
+      "Imaged sucessfully downloaded\n",
+      "{'name': '1-Phase CL3504 ', 'Quantity': '1', 'product_name': 'CL3504', 'description': '.5HP, 1725RPM, 1PH, 60HZ, 56C, 3421L, TEFC, F1', 'Catalog Number': 'CL3504', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.500 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '3.700 A @ 230.0 V3.900 A @ 208.0 V                        7.400 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "{'name': '1-Phase CL3507 ', 'Quantity': '1', 'product_name': 'CL3507', 'description': '.75HP, 1725RPM, 1PH, 60HZ, 56C, 3428LC, TEFC, F', 'Catalog Number': 'CL3507', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Cap Run', 'Output @ Frequency': '.750 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '4.200 A @ 230.0 V5.400 A @ 208.0 V                        8.400 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "1420\n",
+      "\n",
+      "{'name': '1-Phase CL3506 ', 'Quantity': '1', 'product_name': 'CL3506', 'description': '.75HP, 3450RPM, 1PH, 60HZ, 56C, 3424L, TEFC, F1', 'Catalog Number': 'CL3506', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.750 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '4.800 A @ 230.0 V5.000 A @ 208.0 V                        9.600 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "{'name': '1-Phase CL3405 ', 'Quantity': '1', 'product_name': 'CL3405', 'description': '.33HP, 3450RPM, 1PH, 60HZ, 56C, 3413L, TEFC, F1', 'Catalog Number': 'CL3405', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.330 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '230.0 V @ 60 HZ208.0 V @ 60 HZ                        115.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '6.000 A @ 115.0 V3.700 A @ 208.0 V3.200 A @ 208.0 V                        3.000 A @ 230.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "{'name': '1-Phase CL3513 ', 'Quantity': '1', 'product_name': 'CL3513', 'description': '1.5HP, 3450RPM, 1PH, 60HZ, 56C, 3528L, TEFC, F1', 'Catalog Number': 'CL3513', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '1.500 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '15.000 A @ 115.0 V7.500 A @ 230.0 V                        7.900 A @ 208.0 V', 'Design Code': 'L', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "{'name': '1-Phase CL3509 ', 'Quantity': '1', 'product_name': 'CL3509', 'description': '1HP, 3450RPM, 1PH, 60HZ, 56C, 3520L, TEFC, F1', 'Catalog Number': 'CL3509', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '1.000 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '11.800 A @ 115.0 V5.900 A @ 230.0 V                        6.100 A @ 208.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "{'name': '1-Phase CL3510 ', 'Quantity': '1', 'product_name': 'CL3510', 'description': '1HP, 1725RPM, 1PH, 60HZ, 56C, 3524L, TEFC, F1, N', 'Catalog Number': 'CL3510', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '1.000 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '1800 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '12.500 A @ 115.0 V                        6.300 A @ 230.0 V', 'Design Code': 'L', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n",
+      "{'name': '1-Phase CL3503 ', 'Quantity': '1', 'product_name': 'CL3503', 'description': '.5HP, 3450RPM, 1PH, 60HZ, 56C, 3413L, TEFC, F1', 'Catalog Number': 'CL3503', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.500 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '3.200 A @ 208.0 V3.500 A @ 230.0 V                        7.000 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "File saved in: c:\\Users\\pedro\\web-scraping-challenge\\src\\output\\assets\\CL3503\\CL3503_manual.pdf\n",
+      "[]\n",
+      "Imaged sucessfully downloaded\n",
+      "❌ Erro: CAD file unavaliable\n",
+      "{'name': '1-Phase CL3503 ', 'Quantity': '1', 'product_name': 'CL3503', 'description': '.5HP, 3450RPM, 1PH, 60HZ, 56C, 3413L, TEFC, F1', 'Catalog Number': 'CL3503', 'Enclosure': 'TEFC', 'Frame': '56C', 'Frame Material': 'Steel', 'Frequency': '60.00 Hz', 'Motor Letter Type': 'Cap Start, Induction Run', 'Output @ Frequency': '.500 HP @ 60 HZ', 'Phase': '1', 'Synchronous Speed @ Frequency': '3600 RPM @ 60 HZ', 'Voltage @ Frequency': '115.0 V @ 60 HZ208.0 V @ 60 HZ                        230.0 V @ 60 HZ', 'Haz Area Class and Group': 'None', 'Haz Area Division': 'Not Applicable', 'Agency Approvals': 'CURUS', 'Ambient Temperature': '40 °C', 'Auxillary Box': 'No Auxillary Box', 'Auxillary Box Lead Termination': 'None', 'Base Indicator': 'Rigid', 'Bearing Grease Type': 'Polyrex EM (-20F +300F)', 'Blower': 'None', 'Current @ Voltage': '3.200 A @ 208.0 V3.500 A @ 230.0 V                        7.000 A @ 115.0 V', 'Design Code': 'N', 'Drip Cover': 'No Drip Cover', 'Duty Rating': 'CONT'}\n",
+      "\n",
+      "120\n",
+      "\n"
+     ]
     }
-}}
-
-
-def set_directory():
-    try:
-        directory = os.path.join(os.getcwd(), "output")
-        os.makedirs(directory, exist_ok=True)
-        directory = os.path.join(directory, "assets")
-        os.makedirs(directory, exist_ok=True)
-        
-        return directory
-    except OSError as e:
-        print(f"[ERRO] '{directory}': {e}")
-        return None
-
-def create_product_directory(product_name):
-    directory = os.path.join(os.getcwd(), "output")
-    directory = os.path.join(directory, "assets")
-    if product_name:
-        directory = os.path.join(directory, product_name)
-        os.makedirs(directory, exist_ok=True)
-    else:
-        directory = os.path.join(directory, 'product_name_not_found')
-        os.makedirs(directory, exist_ok=True)
-    return directory
-    
-
-
-def get_product_name(product_category,total_pages, page_size=10):
-    list_product_codes = []  
-    list_image_id = []
-
-    for page_index in range(0, total_pages + 1):  # Vai de 1 até 200
-        url = f'https://www.baldor.com/api/products?include=results&language=en-US&pageIndex={page_index}&pageSize={page_size}&category={product_category}'
-        headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/135.0.3179.85"
-        } 
-
-        response = requests.get(url, headers=headers, timeout=10)
-
-        # Using this method, I can get any of the JSON data I need,
-        # but I choose to get the specs through the products page as explained before
-        if response.status_code == 200:
-            data = response.json()
-            products = data['results']['matches']
-
-            if not products:  # If there are no more products, break
-                break
-
-            for product in products:
-                product_code = product.get("code")
-                image_id = product.get("imageId")
-                if product_code:
-                    list_product_codes.append(product_code)
-                else:
-                    list_product_codes.append('')
-                if image_id:
-                    list_image_id.append(str(image_id))
-                else:
-                    print('erro pegar img id')
-                    list_image_id.append('')
-                    
-            print(f"Page {page_index} loaded successfully.")
-        else:
-            print(f"Error {page_index}: {response.status_code}")
-            break  
-
-    return list_product_codes, list_image_id
-
-def get_data(url,product_labels,product_type):
-
-    #setting product_data default values to None
-    product_data = {key: '' for key in product_labels}
-    product_data['name'] = ''
-    product_data['Quantity'] = '1'
-    product_data['product_name'] =''
-    product_data['description'] =''
-    print(product_data)  
-    
-    try:   
-        user_agent = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-              "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/135.0.3179.85")
-
-        options = Options()
-        options.add_argument(f"user-agent={user_agent}")
-        options.add_argument("--headless")  
-        options.add_argument("--disable-gpu")
-
-        driver = webdriver.Edge(options=options)   
-        driver.get(url)
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))       
-        html = driver.page_source      
-        soup = BeautifulSoup(html, 'html.parser')
-
-        product_name = soup.find('div',class_='page-title')
-        product_data['product_name'] = str(product_name.text.strip().replace("\n", ""))      
-
-        description = soup.find('div',class_='product-description')
-        product_data['description'] = str(description.text.strip().replace("\n", ""))           
-        data = soup.find_all('div', class_='col span_1_of_2')
-
-        # create a loop for the 2 columns specs
-        for d in data[0:2]:
-            labels = d.find_all('span',class_='label')
-
-            value = d.find_all('span',class_='value')
-            div_count = 0
-            for label in labels:
-
-                if label.text in product_labels: 
-                    a = str(label.text)
-                    product_data[a] = value[div_count].text.strip().replace("\n", "")                     
-                div_count +=1   
-                
-        product_data['name'] = str(product_data['Phase'])+'-Phase' +' '+str(product_type)+' '+str(product_data['Product Family'])
-        driver.quit()
-        
-    except Exception as e:
-        print(f"Error: {e}")
-        
-        
-    driver.quit()
-    
-    print(product_data)
-    return product_data
-
-
-def get_cad(url,product_name): 
-    try:   
-        cad = ''
-        
-        directory = create_product_directory(product_name)       
-
-        user_agent = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-              "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/135.0.3179.85")
-
-        options = Options()
-        options.add_argument(f"user-agent={user_agent}")
-        prefs = {
-        "download.default_directory": directory,
-        "download.prompt_for_download": False,
-        "download.directory_upgrade": True
-        }
-        options.add_argument("--headless")  
-        options.add_argument("--disable-gpu")
-        options.add_experimental_option("prefs", prefs)
-        driver = webdriver.Edge(options=options)
-        url_drawings = url + '#tab="drawings"'
-        driver.get(url_drawings)
-              
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))     
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".col.span_6_of_12")))
-        
-        # find the selector for the type of download, ten click it
-        download_options = driver.find_element(By.CSS_SELECTOR, ".k-widget.k-dropdown.k-header.ng-pristine.ng-untouched.ng-valid.ng-empty")
-        download_options.click()
-        
-        # select to download a .DWG file
-        dwg_option = WebDriverWait(driver, 3).until(
-        EC.visibility_of_element_located((By.XPATH, "//li[contains(text(), '2D AutoCAD DWG')]")))       
-        dwg_option.click()
-        print('DWG selected')
-
-        # setup to avoid ERR_HTTP2_PROTOCOL_ERROR while dowloading CAD file
-        # Clear cookies
-        driver.delete_all_cookies()        
-        # Clear local storage
-        driver.execute_script("window.localStorage.clear();")       
-        # Clear session storage
-        driver.execute_script("window.sessionStorage.clear();")
-
-        # click the download button
-        download_button = WebDriverWait(driver, 3).until(
-        EC.visibility_of_element_located((By.CSS_SELECTOR, ".k-button.k-button-icon")))
-        download_button.click()
-        print('download button clicked')
-        
-        if "ERR_HTTP2_PROTOCOL_ERROR" in driver.page_source or "Não consigo chegar a esta página" in driver.page_source:    
-            if product_name not in list_cad_download_error:
-                list_cad_download_error.append(product_name)
-                print("❌ Página de erro detectada após o clique no botão de download.")
-            driver.quit()
-            return list_cad_download_error, cad      
-                
-        time.sleep(1)     
-        
-        # verify if DWG was sucessfuly dowloaded
-        files = os.listdir(directory)
-        dwg_files = [f for f in files if f.endswith(".DWG") and not f.endswith(".crdownload")]
-
-        if not dwg_files:
-            print("❌ File not found")
-
-        downloaded_file = dwg_files[0]
-
-        origin = os.path.join(directory, downloaded_file)
-        destiny_directory = os.path.join(directory, f"{product_name}_cad.dwg")
-
-        # rename file
-        os.rename(origin, destiny_directory)
-        cad = str(product_name)+'_cad.dwg'
-        
-    except Exception as e:        
-        if product_name not in list_cad_download_error:
-            list_cad_download_error.append(product_name)
-            
-        print("❌ Erro:", "CAD file unavaliable")   
-        driver.quit()
-        return list_cad_download_error, cad  
-        
-        
-    driver.quit()
-    print('cad',list_cad_download_error)
-    return list_cad_download_error, cad     
-
-
-def get_manual(product_name,mode):    
-    manual = ''
-    directory = create_product_directory(product_name)   
-    url = 'https://www.baldor.com/api/products/'+ product_name +'/infopacket' 
-    output_path = os.path.join(directory, f"{product_name}_manual.pdf")
-    
-    # define hearders
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/135.0.3179.85"
-    }    
-    # Request dowload
-    response = requests.get(url, headers=headers)
-
-    # mode 1 is retrymode
-    if response.status_code == 200:
-        with open(output_path, 'wb') as f:
-            f.write(response.content)
-        print(f"File saved in: {output_path}")
-        
-    # if clause to not add product_name to the error list if not able to download again    
-    elif response.status_code != 200 and mode==1:
-        print(f"Dowload error: {response.status_code}")  
-        #still not able to download manal
-    
-    elif response.status_code == 200 and mode==1:
-        if list_manual_download_error:
-            list_manual_download_error.remove(product_name)
-            #download sucessful
-    else:        
-        list_manual_download_error.append(product_name)
-    
-    print(list_manual_download_error)
-    manual = str(product_name)+'_manual.pdf'
-    return list_manual_download_error, manual, directory
-
-
-def create_url(product_name):
-    list_url=[]
-    for product in product_name:
-        url = 'https://www.baldor.com/catalog/' + product 
-        list_url.append(url)
-
-    return list_url
-
-
-def format_data(product_type, product_data):
-    # format the data to proper manipulation and to give to create_json() proper argumnts
-    if product_type == 'general_purpose' or product_type == "washdown_duty":
-        product_data['product_name'] = str(product_data['product_name'])
-        product_data['description'] = str(product_data['description'])         
-        catalog_number = re.findall(r'\d+', product_data['Catalog Number'])
-        catalog_number = catalog_number[0] if catalog_number else ' ' 
-        product_data['Catalog Number'] = str(catalog_number)       
-        product_data['Frame'] = str(product_data['Frame'])              
-        hp = product_data['Output @ Frequency'].split(' @')[0] 
-        hp = re.sub(r'[^\d.]', '', hp)
-        if hp.startswith('.'):
-            hp = '0' + hp
-        hp = re.sub(r'(\.\d*?)0+$', r'\1', hp).rstrip('.')  
-        # knowing that this HP is at the especified hertz its a important data
-        # but for following the json format as suggeted in the challenge, 
-        # and to show how i handle these type of strings, i decided to follow the sugested format.
-        # Same for 'Voltage at Frequency'
-        product_data['Output @ Frequency'] = str(hp)      
-        product_data['Phase'] = str(product_data['Phase'])  
-        voltage = "/".join(re.findall(r'(\d+)\.0 V', product_data['Voltage @ Frequency']))
-        product_data['Voltage @ Frequency'] = str(voltage) 
-        product_data['Speed'] = str(product_data['Speed'].replace(" rpm", ""))
-
-    return product_data
-
-
-def create_json(product_type,product_data,manual,cad,image): 
-    try: 
-        # checks if any file wasn't downloaded.
-        if manual != '':
-            manual = 'assets/'+product_data['product_name']+'/'+manual
-        if cad != '':
-            cad = 'assets/'+product_data['product_name']+'/'+cad
-        if image != '': 
-            image = 'assets/'+product_data['product_name']+'/'+'imagem_'+image+'.jpeg'
-
-        # checks if its a empty product_name, if so, doesnt create the json file
-        if product_data['product_name'] !='':
-            if product_type == 'general_purpose' or product_type == "washdown_duty":
-                product_json = {
-                'product_id': product_data['product_name'],
-                'description': product_data['description'],
-                'name': product_data['name'],
-                'specs': [
-                    {'hp': product_data['Output @ Frequency']},
-                    {'voltage': product_data['Voltage @ Frequency']},
-                    {'rpm': product_data['Speed']},
-                    {'Frame': product_data['Frame']}],
-                'bom': [
-                    {'part_number': product_data['Catalog Number']},
-                    {'description': product_data['Product Family']},
-                    {'quantity': product_data['Quantity']}],
-                'assets': [
-                    {'manual': manual},
-                    {'cad': cad},
-                    {'image': image}]}
-                
-                json_name = product_data['product_name'] +'.json'    
-                json_path = os.path.join(os.getcwd(), "output", json_name)
-                   
-                with open(json_path, 'w') as f:
-                    json.dump(product_json, f, indent=4)
-                    
-            else:
-                print('empty product name')
-    except Exception as e:
-        print(f"Error: {e}")       
-    return
-
-
-def get_image(image_id,product_name):
-    try:
-        url = f'https://www.baldor.com/api/images/{image_id}'
-        print(url)
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-            "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/135.0.3179.85"}  
-        
-        if image_id =='' or image_id == '0':
-            print('image not available')
-    
-        response = requests.get(url, headers=headers, timeout=10)
-        
-        # Verify connection
-        if response.status_code == 200:
-            
-            directory = os.path.join(os.getcwd(), "output")
-            directory = os.path.join(directory, "assets")
-            print(product_name,' image get')
-            if product_name !='':
-                directory = os.path.join(directory, product_name)
-                os.makedirs(directory, exist_ok=True)
-            else:
-                directory = os.path.join(directory, 'product_name_not_found')
-                os.makedirs(directory, exist_ok=True)
-            print(directory)
-            
-            file_path = os.path.join(directory, f"imagem_{image_id}.jpeg")
-            
-            
-            with open(file_path, "wb") as f:
-                f.write(response.content)
-            print("Imaged sucessfully downloaded")
-        else:
-            print(f"Error downloading image. Status code: {response.status_code}")
-            
-    except Exception as e:
-        print(f"Error: {e}")
-        
-    return image_id
-
-
-def process_product(url, image_id, product_labels):
-    try:
-        product_data = get_data(url, product_labels, 'AC_MOTOR')
-        product_name = product_data['product_name']
-        manual = get_manual(product_name, 0)[1]
-
-        cad = get_cad(url, product_name)[1]
-        image = get_image(str(image_id),str(product_name))
-
-        format_data('general_purpose', product_data)
-        create_json('general_purpose',product_data,manual,cad,image)
-
-    except Exception as e:
-        print(f"Erro ao processar URL {url}: {e}")
-
-    return 
-
-# Can add a for loop to scrape each product type by using a list of product categories, if desired. 
-# For testing purposes, I chose to use 2 product types under the AC MOTORS family
-
-# general purpose and washdown duty
-list_family_codes = ['69','16']
-
-if __name__ == "__main__":
-    
-    # can add anoter loop, to scrape other product_categories
-
-    # loop to scrape AC_MOTORS category
-    for family_code in list_family_codes:
-        if family_code == '69':
-            product_family ='general_purpose'
-        elif family_code =='16':
-            product_family ='washdown_duty'
-            
-        product_category = 'AC_MOTORS'
-        # product category is the main product family. 16 = Washdown duty
-        
-        # total pages is how many products request
-        # total pages = 0 is 10 products, =1 is 20, and so on, until there is in no more new products
-        total_pages = 1
-        set_directory()
-        
-        #gets all products codes
-        codes = get_product_name(family_code, total_pages)
-        urls = create_url(codes[0])
-        
-        #get image ID of each product
-        image_ids = codes[1]
-        #sets the product Group and family, and gets its labels
-        product_labels = products_labels[product_category][product_family]['labels']
-        
-        #flag to monitor run time
-        start = time.time()
-    
-        # Multi threading module
-        # Can adjust the max workers
-        with ThreadPoolExecutor(max_workers=10) as executor:
-            futures = []
-            for url, image_id in zip(urls, image_ids):
-                futures.append(
-                    executor.submit(process_product, url, image_id, product_labels)
-                )
-    
-            for future in as_completed(futures):
-                future.result()
-        
-        end = time.time()
-        print(f"Total time: {end - start:.2f} seconds")
-
-    # can add retry loop for get_cad, get_manual for missing files, usind mode ==1
+   ],
+   "source": [
+    "MAX_THREADS = 10\n",
+    "\n",
+    "\n",
+    "if __name__ == '__main__':\n",
+    "\n",
+    "    list_product_web_page_code = [110, 312]\n",
+    "    list_sub_sub_type = [\"Three Phase Enclosed\",\"Single Phase Enclosed\"]\n",
+    "    # list_product_web_page_code = [110]\n",
+    "    # list_sub_sub_type = [\"Three Phase Enclosed\"]\n",
+    "\n",
+    "    for sub_sub_type in list_sub_sub_type:\n",
+    "        product_spec = []\n",
+    "        product_web_page_code = list(global_vars.dict_ac_motors_general_purpose[sub_sub_type].keys())[0]\n",
+    "        print(product_web_page_code)\n",
+    "        \n",
+    "        product_spec = global_vars.dict_ac_motors_general_purpose[sub_sub_type][product_web_page_code]\n",
+    "        print(product_spec)\n",
+    "\n",
+    "        list_product_codes, list_image_id = get_product_ids(product_web_page_code)\n",
+    "        \n",
+    "\n",
+    "        with ThreadPoolExecutor(max_workers=10) as executor:\n",
+    "            futures = []\n",
+    "            # for product_code in list_product_codes:\n",
+    "            for product_code,image_id in zip(list_product_codes, list_image_id):\n",
+    "                futures.append(executor.submit(process_product, product_code, image_id, product_spec))\n",
+    "\n",
+    "            for future in as_completed(futures):\n",
+    "                future.result()  # Captura possíveis exceções\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.2"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
