@@ -157,3 +157,123 @@ def general_get_specs(product_code,product_specs):
     
     print(product_data)
     return product_data
+
+def get_image(image_id,directory):
+    try:
+        url = f'https://www.baldor.com/api/images/{image_id}'
+        
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+            "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/135.0.3179.85"}  
+        
+        if image_id =='' or image_id == '0':
+            print('image not available')
+    
+        response = requests.get(url, headers=headers, timeout=10)
+        
+        # Verify connection
+        if response.status_code == 200:
+
+
+            output_path= os.path.join(directory, f"imagem_{image_id}.jpeg")      
+
+            with open(output_path, "wb") as f:
+                f.write(response.content)
+            print("Imaged sucessfully downloaded")
+        else:
+            print(f"Error downloading image. Status code: {response.status_code}")
+            directory = os.path.join(directory, 'product_code_not_found')
+            os.makedirs(directory, exist_ok=True)
+            
+    except Exception as e:
+        print(f"Error: {e}")
+        
+    return image_id
+
+
+###################
+def get_cad(product_code,directory): 
+    try:   
+        cad = ''
+        url = f'https://www.baldor.com/catalog/{product_code}'
+        user_agent = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+              "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36 Edg/135.0.3179.85")
+
+        options = Options()
+        options.add_argument(f"user-agent={user_agent}")
+        prefs = {
+        "download.default_directory": directory,
+        "download.prompt_for_download": False,
+        "download.directory_upgrade": True
+        }
+        options.add_argument("--headless")  
+        options.add_argument("--disable-gpu")
+        options.add_experimental_option("prefs", prefs)
+        driver = webdriver.Chrome(options=options)
+        url_drawings = url + '#tab="drawings"'
+        driver.get(url_drawings)
+              
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))     
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".col.span_6_of_12")))
+        
+        # find the selector for the type of download, ten click it
+        download_options = driver.find_element(By.CSS_SELECTOR, ".k-widget.k-dropdown.k-header.ng-pristine.ng-untouched.ng-valid.ng-empty")
+        download_options.click()
+        
+        # select to download a .DWG file
+        dwg_option = WebDriverWait(driver, 3).until(
+        EC.visibility_of_element_located((By.XPATH, "//li[contains(text(), '2D AutoCAD DWG')]")))       
+        dwg_option.click()
+        print('DWG selected')
+
+        # setup to avoid ERR_HTTP2_PROTOCOL_ERROR while dowloading CAD file
+        # Clear cookies
+        driver.delete_all_cookies()        
+        # Clear local storage
+        driver.execute_script("window.localStorage.clear();")       
+        # Clear session storage
+        driver.execute_script("window.sessionStorage.clear();")
+
+        # click the download button
+        download_button = WebDriverWait(driver, 3).until(
+        EC.visibility_of_element_located((By.CSS_SELECTOR, ".k-button.k-button-icon")))
+        download_button.click()
+        print('download button clicked')
+        
+        if "ERR_HTTP2_PROTOCOL_ERROR" in driver.page_source or "Não consigo chegar a esta página" in driver.page_source:    
+            if product_code not in global_vars.list_cad_download_error:
+                global_vars.list_cad_download_error.append(product_code)
+                print("❌ Página de erro detectada após o clique no botão de download.")
+            driver.quit()
+            return global_vars.list_cad_download_error, cad      
+                
+        # time.sleep(1)     
+        
+        # verify if DWG was sucessfuly dowloaded
+        files = os.listdir(directory)
+        dwg_files = [f for f in files if f.endswith(".DWG") and not f.endswith(".crdownload")]
+
+        if not dwg_files:
+            print("❌ File not found")
+
+        downloaded_file = dwg_files[0]
+
+        origin = os.path.join(directory, downloaded_file)
+        destiny_directory = os.path.join(directory, f"{product_code}_cad.dwg")
+
+        # rename file
+        os.rename(origin, destiny_directory)
+        cad = str(product_code)+'_cad.dwg'
+        
+    except Exception as e:        
+        if product_code not in global_vars.list_cad_download_error:
+            global_vars.list_cad_download_error.append(product_code)
+            
+        print("❌ Erro:", "CAD file unavaliable")   
+        driver.quit()
+        return cad  
+        
+        
+    driver.quit()
+    print('cad',global_vars.list_cad_download_error)
+    return cad     
