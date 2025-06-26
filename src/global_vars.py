@@ -1,4 +1,4 @@
-# list_cad_download_error =[]
+list_cad_download_error = []
 error_log_manual_download =[]
 
 dict_ac_motors_general_purpose = {"Three Phase Enclosed": { 110: ["Catalog Number","Enclosure","Frame","Frame Material","Frequency","Motor Letter Type","Output @ Frequency",
