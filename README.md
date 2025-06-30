@@ -21,11 +21,11 @@ Focus on Data Quality as a priority.
 web-scraping-challenge/
 │
 ├── src/
-│   ├── main.py                  # main file responsible for running the ETL pipeline
-│   ├── global_vars.py           # declaration of global variables 
+│   ├── main.py                  # Main file responsible for running the ETL pipeline
+│   ├── global_vars.py           # Declaration of global variables 
 │   ├── multi_thread_module.py   # Multi Thread function for Selenium 
-│   ├── utility.py               # utility functions such as data transformation and loading
+│   ├── utility.py               # Utility functions such as data transformation and loading
 │   └── web_scraper.py           # Data gathering functions 
-├── .gitignore                   # Ignored files and folders ignored by git 
+├── .gitignore                   # Files and folders ignored by git 
 └── README.md                    # Project documentation
 ```
