@@ -1,9 +1,8 @@
 # ETL Pipeline for Data Gatheting of Baldor's Industrial Machinery products
-<br>
+
 #### 📘 Overview
 
 This project covers the entire data pipeline, from collection to storage, using an ETL process implemented in Python. The data collection was performed using frameworks and libraries such as BeautifulSoup, Selenium, and Requests. More details about the dependencies and tools used can be found in the requirements.txt file.
-<br>
 
 #### 🎯 Objectives
 
@@ -16,7 +15,6 @@ Load into organized .json files.
 Cover all previous objectives, while keeping the pipeline modular, organized, and robust.
 
 Focus on Data Quality as a priority.
-<br>
 
 #### 🗂️ Project structure
 ```
