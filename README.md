@@ -1,4 +1,4 @@
-# ETL Pipeline for Data Gatheting of Baldor's Industrial Machinery products
+# ETL Pipeline for Data Gathering of Baldor's Industrial Machinery products
 
 #### 📘 Overview
 
